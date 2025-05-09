@@ -23,6 +23,43 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
+```
 
+## Usage
 
-## Finalizing the project soon 
+1. Start the FastAPI server:
+```bash
+python src/app.py
+```
+
+2. Access the Gradio UI at `http://localhost:7860`
+
+3. Enter your questions in the chat interface and get AI-powered responses
+
+## Configuration
+
+The chatbot can be configured through environment variables or a config file:
+
+- `MODEL_PATH`: Path to the fine-tuned model
+- `MAX_LENGTH`: Maximum response length
+- `TEMPERATURE`: Sampling temperature for responses
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- NVIDIA NeMo team for the amazing framework
+- LLAMA3 for the base model
+- All contributors who have helped shape this project 
+
+## Project Under Developmenmt | Testing => Coming Soon 
