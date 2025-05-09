@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# NeMo specific
+.nemo_installed
+.nemo/
+models/
+!scripts/download_model.py
+
+# Data
+data/raw/*
+data/processed/*
+data/qa_pairs/*
+data/datasets/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/qa_pairs/.gitkeep
+!data/datasets/.gitkeep
+
+# Jupyter
+.ipynb_checkpoints
+
+# Logs
+logs/
+*.log
+
+# NIM export
+nim/export/
