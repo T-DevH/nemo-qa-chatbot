@@ -62,4 +62,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - LLAMA3 for the base model
 - All contributors who have helped shape this project 
 
-## Project Under Developmenmt | Testing => Coming Soon 
+## Project Under Development | Testing => Coming Soon 
