@@ -1,4 +1,3 @@
-cat > scripts/download_model.py << 'EOF'
 #!/usr/bin/env python3
 """Download LLAMA3 8B model from NVIDIA NGC."""
 
@@ -70,4 +69,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-EOF
+
+# This file is intended for downloading models.
+# Add your download code here.
