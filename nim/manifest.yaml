@@ -1,0 +1,57 @@
+cat > nim/manifest.yaml << 'EOF'
+name: llama3-qa-chatbot
+version: 0.1.0
+description: Q&A chatbot built with NVIDIA NeMo 2.0 and LLAMA3
+author: T-DevH
+license: Apache-2.0
+repository: https://github.com/T-DevH/nemo-qa-chatbot
+documentation: https://github.com/T-DevH/nemo-qa-chatbot/blob/main/README.md
+tags:
+  - llm
+  - qa
+  - chatbot
+  - nemo
+  - llama3
+inputs:
+  - name: question
+    description: User question
+    type: string
+    required: true
+  - name: context
+    description: Optional context
+    type: string
+    required: false
+  - name: history
+    description: Conversation history
+    type: array
+    required: false
+outputs:
+  - name: response
+    description: Model response
+    type: string
+  - name: explainability
+    description: Explainability data
+    type: object
+runtime:
+  nvidia_gpu: required
+  cpu_arch: x86_64
+  container:
+    ports:
+      - 8000
+    env:
+      - name: MODEL_PATH
+        description: Path to the model
+        default: models/llama3-8b-lora
+      - name: MAX_LENGTH
+        description: Maximum length of generated text
+        default: "512"
+      - name: TEMPERATURE
+        description: Sampling temperature
+        default: "0.7"
+      - name: TOP_P
+        description: Top-p sampling parameter
+        default: "0.9"
+      - name: TOP_K
+        description: Top-k sampling parameter
+        default: "50"
+EOF
