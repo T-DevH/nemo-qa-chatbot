@@ -63,19 +63,56 @@ rm -rf apex
 ```
 ## Usage
 
-### 1. Download Base Model
+### Prerequisites
+
+Before starting, ensure you have:
+1. NVIDIA GPU with CUDA 12.1 support
+2. Sufficient disk space (at least 20GB)
+3. NGC account and API token
+
+### 1. Set up NGC Token
 
 ```bash
-python scripts/download_model.py
+# Set your NGC token as an environment variable
+export NGC_TOKEN="your_token_here"
+
+# Or login to HuggingFace (alternative method)
+huggingface-cli login
 ```
 
-### 2. Curate Training Data
+### 2. Download Base Model
+
+```bash
+# Basic download
+python scripts/download_model.py
+
+# With specific options
+python scripts/download_model.py \
+  --model_name llama3-8b \
+  --output_dir models/base \
+  --verify
+
+# Force redownload if model exists
+python scripts/download_model.py --force
+
+# Skip verification (not recommended)
+python scripts/download_model.py --skip_verification
+```
+
+The download script will:
+- Verify sufficient disk space
+- Check NGC token availability
+- Download the model with progress bar
+- Verify model structure and integrity
+- Clean up GPU memory after download
+
+### 3. Curate Training Data
 
 ```bash
 python scripts/curate_data.py --input_dir data/raw --output_dir data/processed
 ```
 
-### 3. Fine-tune with LoRA
+### 4. Fine-tune with LoRA
 
 ```bash
 python scripts/train.py \
@@ -85,7 +122,7 @@ python scripts/train.py \
   --output_dir models/finetuned
 ```
 
-### 4. Evaluate the Model
+### 5. Evaluate the Model
 
 ```bash
 python scripts/evaluate.py \
@@ -94,14 +131,14 @@ python scripts/evaluate.py \
   --output_path evaluation_results.json
 ```
 
-### 5. Deploy Chatbot
+### 6. Deploy Chatbot
 
 ```bash
 python scripts/deploy.py \
   --model_path models/finetuned/final_model
 ```
 
-### 6. Export as NIM (Optional)
+### 7. Export as NIM (Optional)
 
 ```bash
 python scripts/export_nim.py \
@@ -109,7 +146,7 @@ python scripts/export_nim.py \
   --output_dir nim/export
 ```
 
-### 7. Build and Run NIM Container (Optional)
+### 8. Build and Run NIM Container (Optional)
 
 ```bash
 cd nim/export
