@@ -1,4 +1,12 @@
 # NeMo QA Chatbot
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![NVIDIA NeMo](https://img.shields.io/badge/NVIDIA-NeMo%202.0-green.svg)](https://github.com/NVIDIA/NeMo)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.1.0-red.svg)](https://pytorch.org/)
+[![CUDA](https://img.shields.io/badge/CUDA-12.1-blue.svg)](https://developer.nvidia.com/cuda-12-1-0-download-archive)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
 A production-ready Q&A chatbot built with NVIDIA NeMo 2.0 and LLAMA3, featuring high-quality data curation and efficient LoRA fine-tuning.
 
@@ -43,7 +51,7 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -e . --extra-index-url https://pypi.nvidia.com
 ```
 
-# Install NVIDIA Apex separately
+##install NVIDIA Apex separately
 ```bash
 git clone https://github.com/NVIDIA/apex
 cd apex
