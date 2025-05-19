@@ -51,7 +51,7 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -e . --extra-index-url https://pypi.nvidia.com
 ```
 
-##install NVIDIA Apex separately
+## Install NVIDIA Apex separately
 ```bash
 git clone https://github.com/NVIDIA/apex
 cd apex
