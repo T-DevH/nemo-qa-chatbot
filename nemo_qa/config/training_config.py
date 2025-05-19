@@ -1,4 +1,3 @@
-cat > nemo_qa/config/training_config.py << 'EOF'
 """Training configuration for NeMo QA Chatbot.
 
 This module defines the configuration for training the NeMo QA Chatbot model,
@@ -235,4 +234,3 @@ if __name__ == "__main__":
     
     # Get PyTorch Lightning Trainer kwargs
     trainer_kwargs = config.get_lightning_trainer_kwargs()
-EOF

@@ -1,4 +1,3 @@
-cat > nemo_qa/config/nim_config.py << 'EOF'
 """NIM configuration for NeMo QA Chatbot.
 
 This module defines the configuration for NeMo Inference Microservices (NIM),
@@ -258,28 +257,3 @@ class NIMConfig:
                 "enable_metrics": self.enable_metrics,
             }
         }
-
-# Example usage
-if __name__ == "__main__":
-    # Create a default configuration
-    config = NIMConfig()
-    
-    # Print the configuration
-    import json
-    print(json.dumps(config.to_dict(), indent=2))
-    
-    # Save the configuration
-    config.save("nim_config.json")
-    
-    # Load the configuration
-    loaded_config = NIMConfig.load("nim_config.json")
-    
-    # Get Docker environment variables
-    docker_env_vars = config.get_docker_env_vars()
-    
-    # Get NIM manifest
-    nim_manifest = config.get_nim_manifest()
-    
-    # Get NIM configuration dictionary
-    nim_config_dict = config.get_nim_config_dict()
-EOF

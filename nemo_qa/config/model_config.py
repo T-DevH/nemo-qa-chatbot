@@ -1,4 +1,3 @@
-cat > nemo_qa/config/model_config.py << 'EOF'
 """LLAMA3 8B model configuration for NeMo QA Chatbot.
 
 This module defines the configuration for the LLAMA3 8B model, including model paths,
@@ -189,4 +188,3 @@ if __name__ == "__main__":
     
     # Get NeMo configuration
     nemo_config = config.get_nemo_config()
-EOF

@@ -1,4 +1,3 @@
-cat > nim/app.py << 'EOF'
 """NIM application entry point."""
 
 import os
@@ -72,4 +71,3 @@ async def metadata():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
-EOF

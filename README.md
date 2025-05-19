@@ -40,9 +40,16 @@ python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install dependencies
-pip install -e .
+pip install -e . --extra-index-url https://pypi.nvidia.com
 ```
 
+# Install NVIDIA Apex separately
+```bash
+git clone https://github.com/NVIDIA/apex
+cd apex
+pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation --global-option="--cpp_ext" --global-option="--cuda_ext" ./
+cd ..
+```
 ## Usage
 
 ### 1. Download Base Model
@@ -143,6 +150,17 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## License
 
 This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+
+## Citation
+if you use this project in your reaserch or work, please consider citing: 
+@misc{hammadou2025nemoqachatbot,
+  author = {Hammadou, Tarik},
+  title = {NeMo QA Chatbot: Production-Ready Q&A with LLAMA3 and NeMo 2.0},
+  year = {2025},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/T-DevH/nemo-qa-chatbot}}
+}
 
 ## Acknowledgments
 

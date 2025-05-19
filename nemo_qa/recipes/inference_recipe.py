@@ -1,4 +1,3 @@
-cat > nemo_qa/recipes/inference_recipe.py << 'EOF'
 """Inference recipe for NeMo QA Chatbot."""
 
 import os
@@ -112,4 +111,3 @@ def export_model_for_nim(
     logger.info(f"Saved NIM configuration to {config_file}")
     
     return output_dir
-EOF

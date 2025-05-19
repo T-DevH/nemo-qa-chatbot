@@ -1,4 +1,3 @@
-cat > nim/model_handler.py << 'EOF'
 """NIM model handler implementation."""
 
 import torch
@@ -155,4 +154,3 @@ class LLAMA3QAChatbotHandler:
         except Exception as e:
             logger.error(f"Error processing attention weights: {e}")
             return None
-EOF

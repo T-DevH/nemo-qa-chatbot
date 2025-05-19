@@ -55,3 +55,31 @@ logs/
 
 # NIM export
 nim/export/
+
+# Binary and executable files
+nemo_qa/bin/
+bin/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# OS specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~
+
+# Local configuration files
+.env
+.env.*
+config.local.yaml

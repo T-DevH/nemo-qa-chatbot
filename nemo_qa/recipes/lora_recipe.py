@@ -1,4 +1,3 @@
-cat > nemo_qa/recipes/lora_recipe.py << 'EOF'
 """LoRA fine-tuning recipe for NeMo QA Chatbot."""
 
 import os
@@ -177,4 +176,3 @@ def lora_finetuning_recipe(
     model.save_to(model_save_path)
     
     return model_save_path
-EOF

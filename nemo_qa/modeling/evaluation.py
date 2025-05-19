@@ -155,4 +155,3 @@ def compute_relevance_score(question: str, answer: str) -> float:
     # to compute the relevance score
     
     return 0.8
-EOF

@@ -1,4 +1,3 @@
-cat > nim/config.py << 'EOF'
 """NIM configuration."""
 
 import os
@@ -44,4 +43,3 @@ def load_config(config_path: Optional[str] = None) -> Dict[str, Any]:
         config = NIMConfig().to_dict()
     
     return config
-EOF

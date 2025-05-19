@@ -1,4 +1,3 @@
-cat > nemo_qa/config/lora_config.py << 'EOF'
 """LoRA configuration for NeMo QA Chatbot.
 
 This module defines the configuration for Low-Rank Adaptation (LoRA) fine-tuning,
@@ -165,4 +164,3 @@ if __name__ == "__main__":
     
     # Get NeMo LoRA configuration
     nemo_config = config.get_nemo_lora_config()
-EOF

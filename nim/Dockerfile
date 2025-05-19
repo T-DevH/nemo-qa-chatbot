@@ -1,4 +1,3 @@
-cat > nim/Dockerfile << 'EOF'
 FROM nvcr.io/nvidia/nemo:24.01
 
 WORKDIR /app
@@ -26,4 +25,3 @@ EXPOSE 8000
 
 # Run the NIM server
 CMD ["python", "-m", "nim.app"]
-EOF

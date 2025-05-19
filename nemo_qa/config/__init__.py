@@ -1,5 +1,4 @@
 # Create config/__init__.py
-cat > nemo_qa/config/__init__.py << 'EOF'
 """Configuration for NeMo QA Chatbot.
 
 
@@ -147,4 +146,3 @@ class NIMConfig:
     def to_dict(self):
         """Convert to dictionary."""
         return {k: v for k, v in self.__dict__.items()}
-EOF
