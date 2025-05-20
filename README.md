@@ -47,10 +47,6 @@ cd nemo-qa-chatbot
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-# Install dependencies
-pip install -e . --extra-index-url https://pypi.nvidia.com
-```
-
 ## Install NVIDIA Apex separately
 ```bash
 git clone https://github.com/NVIDIA/apex
@@ -60,7 +56,11 @@ cd ..
 
 # Remove Apex source directory (recommended)
 rm -rf apex
+
+# Install dependencies
+pip install -e . --extra-index-url https://pypi.nvidia.com
 ```
+
 ## Usage
 
 ### Prerequisites
@@ -69,18 +69,33 @@ Before starting, ensure you have:
 1. NVIDIA GPU with CUDA 12.1 support
 2. Sufficient disk space (at least 20GB)
 3. NGC account and API token
+4. NGC CLI installed (if not, follow the installation steps below)
 
-### 1. Set up NGC Token
+### 1. Install NGC CLI (if not already installed)
 
 ```bash
-# Set your NGC token as an environment variable
-export NGC_TOKEN="your_token_here"
+# Download NGC CLI
+wget https://ngc.nvidia.com/downloads/ngccli_linux.zip
+unzip ngccli_linux.zip
 
-# Or login to HuggingFace (alternative method)
-huggingface-cli login
+# Move to a system directory
+sudo mv ngc /usr/local/bin/
+
+# Verify installation
+ngc --version
 ```
 
-### 2. Download Base Model
+### 2. Configure NGC CLI
+
+```bash
+# Login to NGC
+ngc config set
+
+# Enter your NGC API key when prompted
+# You can find your API key at: https://ngc.nvidia.com/setup/api-key
+```
+
+### 3. Download Base Model
 
 ```bash
 # Basic download
@@ -89,30 +104,30 @@ python scripts/download_model.py
 # With specific options
 python scripts/download_model.py \
   --model_name llama3-8b \
-  --output_dir models/base \
-  --verify
+  --output_dir models/base
 
 # Force redownload if model exists
 python scripts/download_model.py --force
-
-# Skip verification (not recommended)
-python scripts/download_model.py --skip_verification
 ```
 
 The download script will:
 - Verify sufficient disk space
-- Check NGC token availability
-- Download the model with progress bar
-- Verify model structure and integrity
-- Clean up GPU memory after download
+- Check NGC CLI availability
+- Download the model using NGC CLI
+- Show download progress in real-time
+- Handle any download errors gracefully
 
-### 3. Curate Training Data
+Available models:
+- `llama3-8b`: LLAMA3 8B model
+- `llama3.1-8b`: LLAMA3.1 8B model
+
+### 4. Curate Training Data
 
 ```bash
 python scripts/curate_data.py --input_dir data/raw --output_dir data/processed
 ```
 
-### 4. Fine-tune with LoRA
+### 5. Fine-tune with LoRA
 
 ```bash
 python scripts/train.py \
@@ -122,7 +137,7 @@ python scripts/train.py \
   --output_dir models/finetuned
 ```
 
-### 5. Evaluate the Model
+### 6. Evaluate the Model
 
 ```bash
 python scripts/evaluate.py \
@@ -131,14 +146,14 @@ python scripts/evaluate.py \
   --output_path evaluation_results.json
 ```
 
-### 6. Deploy Chatbot
+### 7. Deploy Chatbot
 
 ```bash
 python scripts/deploy.py \
   --model_path models/finetuned/final_model
 ```
 
-### 7. Export as NIM (Optional)
+### 8. Export as NIM (Optional)
 
 ```bash
 python scripts/export_nim.py \
@@ -146,7 +161,7 @@ python scripts/export_nim.py \
   --output_dir nim/export
 ```
 
-### 8. Build and Run NIM Container (Optional)
+### 9. Build and Run NIM Container (Optional)
 
 ```bash
 cd nim/export

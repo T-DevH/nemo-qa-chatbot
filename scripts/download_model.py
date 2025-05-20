@@ -1,40 +1,18 @@
 #!/usr/bin/env python3
-"""Download LLAMA3 8B model from NVIDIA NGC."""
+"""Download LLAMA3 8B model using NGC CLI."""
 import os
 import argparse
 import logging
-import hashlib
+import subprocess
 import shutil
 from pathlib import Path
-from typing import Optional, Dict, Any
-import torch
-from tqdm import tqdm
-from nemo.collections.nlp.models.language_modeling.megatron_gpt_model import MegatronGPTModel
-from huggingface_hub import HfFolder
+from typing import Dict, Any
 
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
-
-def get_ngc_token() -> Optional[str]:
-    """Get NGC token from environment or user input."""
-    token = os.getenv("NGC_TOKEN")
-    if not token:
-        token = HfFolder.get_token()
-    if not token:
-        logger.warning("No NGC token found. Please set NGC_TOKEN environment variable or login to HuggingFace.")
-        return None
-    return token
-
-def calculate_checksum(file_path: str) -> str:
-    """Calculate SHA256 checksum of a file."""
-    sha256_hash = hashlib.sha256()
-    with open(file_path, "rb") as f:
-        for byte_block in iter(lambda: f.read(4096), b""):
-            sha256_hash.update(byte_block)
-    return sha256_hash.hexdigest()
 
 def verify_disk_space(path: str, required_space_gb: float = 20) -> bool:
     """Verify if there's enough disk space."""
@@ -46,7 +24,6 @@ def download_model(
     model_name: str = "llama3-8b",
     output_dir: str = "models/base",
     force: bool = False,
-    verify: bool = True
 ) -> str:
     """Download the model from NVIDIA NGC.
     
@@ -54,17 +31,19 @@ def download_model(
         model_name: Model name
         output_dir: Output directory
         force: Force download even if model exists
-        verify: Verify model after download
         
     Returns:
         Path to the downloaded model
     """
-    # Model mapping with checksums
+    # Model mapping to NGC model paths
     models: Dict[str, Dict[str, Any]] = {
         "llama3-8b": {
-            "path": "nvidia/nemo-llama3-8b",
+            "ngc_path": "nvidia/nemo/llama-3_1-8b-nemo:1.0",
             "size_gb": 16,
-            "expected_checksum": None  # To be added when available
+        },
+        "llama3.1-8b": {
+            "ngc_path": "nvidia/nemo/llama-3_1-8b-nemo:1.0",
+            "size_gb": 16,
         }
     }
     
@@ -87,87 +66,75 @@ def download_model(
     if not verify_disk_space(str(output_path), model_info["size_gb"]):
         raise OSError(f"Not enough disk space. Required: {model_info['size_gb']}GB")
     
-    # Check NGC token
-    token = get_ngc_token()
-    if not token:
-        raise ValueError("NGC token not found. Please set NGC_TOKEN environment variable.")
-    
-    # Download model
-    logger.warning("This download requires sufficient GPU memory. Please ensure you have enough VRAM available.")
-    logger.info(f"Downloading {model_name} from {model_info['path']}...")
+    # Download model using NGC CLI
+    logger.warning("This download requires sufficient disk space. Please ensure you have enough space available.")
+    logger.info(f"Downloading {model_name} from NGC: {model_info['ngc_path']}...")
     
     try:
-        with torch.cuda.device(0):  # Ensure we're using the first GPU
-            model = MegatronGPTModel.from_pretrained(
-                model_info["path"],
-                token=token,
-                progress_bar=True
-            )
-            
-            # Save model
-            logger.info(f"Saving model to {model_dir}...")
-            model.save_to(str(model_dir))
-            
-            # Cleanup
-            del model
-            torch.cuda.empty_cache()
-            
-            if verify:
-                if not verify_model(str(model_dir)):
-                    raise RuntimeError("Model verification failed")
-            
-            logger.info(f"Model downloaded and saved to {model_dir}")
+        # Create the output directory with appropriate permissions
+        model_dir.mkdir(parents=True, exist_ok=True)
+        os.chmod(model_dir, 0o755)  # Set read/write/execute permissions for user, read/execute for others
+        
+        # Use NGC CLI to download the model (with full path)
+        cmd = [
+            "/data/TAO/getting_started_v4.0.0/setup/ngc-cli/ngc",  # Full path to NGC CLI
+            "registry",
+            "model",
+            "download-version",
+            model_info["ngc_path"],
+            "--dest",
+            str(model_dir)
+        ]
+        
+        logger.info(f"Running command: {' '.join(cmd)}")
+        process = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            bufsize=1  # Line buffered
+        )
+        
+        # Stream the output to show download progress
+        while True:
+            output = process.stdout.readline()
+            if output == '' and process.poll() is not None:
+                break
+            if output:
+                logger.info(output.strip())
+                
+        # Get the return code
+        return_code = process.poll()
+        
+        # Get any error output
+        error_output = process.stderr.read()
+        if error_output:
+            logger.warning(f"Error output: {error_output}")
+        
+        # Check if download was successful
+        if return_code == 0:
+            logger.info(f"Model successfully downloaded to {model_dir}")
             return str(model_dir)
+        else:
+            raise RuntimeError(f"NGC CLI command failed with return code {return_code}")
             
+    except FileNotFoundError:
+        logger.error("NGC CLI not found at the specified path. Please check the path.")
+        logger.info("Path used: /data/TAO/getting_started_v4.0.0/setup/ngc-cli/ngc")
+        raise
     except Exception as e:
         logger.error(f"Failed to download model: {e}")
         if model_dir.exists():
             shutil.rmtree(model_dir)
         raise
 
-def verify_model(model_dir: str) -> bool:
-    """Verify the downloaded model by loading it and checking its structure."""
-    try:
-        logger.info(f"Verifying model at {model_dir}...")
-        
-        # Check if all required files exist
-        required_files = ["model_config.yaml", "model_weights.ckpt"]
-        for file in required_files:
-            if not (Path(model_dir) / file).exists():
-                logger.error(f"Required file {file} not found")
-                return False
-        
-        # Load model
-        model = MegatronGPTModel.restore_from(model_dir)
-        
-        # Verify model architecture
-        if not hasattr(model, "config"):
-            logger.error("Model missing config attribute")
-            return False
-        
-        # Verify model parameters
-        if not hasattr(model, "parameters"):
-            logger.error("Model missing parameters")
-            return False
-        
-        # Cleanup
-        del model
-        torch.cuda.empty_cache()
-        
-        logger.info("Model verification successful!")
-        return True
-        
-    except Exception as e:
-        logger.error(f"Model verification failed: {e}")
-        return False
-
 def main():
-    parser = argparse.ArgumentParser(description="Download LLAMA3 8B model")
+    parser = argparse.ArgumentParser(description="Download LLAMA3 8B model from NGC")
     parser.add_argument(
         "--model_name",
         type=str,
         default="llama3-8b",
-        choices=["llama3-8b"],
+        choices=["llama3-8b", "llama3.1-8b"],
         help="Model name"
     )
     parser.add_argument(
@@ -181,16 +148,6 @@ def main():
         action="store_true",
         help="Force download even if model exists"
     )
-    parser.add_argument(
-        "--verify",
-        action="store_true",
-        help="Verify the model after downloading"
-    )
-    parser.add_argument(
-        "--skip_verification",
-        action="store_true",
-        help="Skip model verification after download"
-    )
     
     args = parser.parse_args()
     
@@ -198,8 +155,7 @@ def main():
         model_dir = download_model(
             args.model_name,
             args.output_dir,
-            args.force,
-            not args.skip_verification
+            args.force
         )
         logger.info(f"Model successfully downloaded to: {model_dir}")
     except Exception as e:
