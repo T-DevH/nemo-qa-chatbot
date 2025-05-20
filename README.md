@@ -121,13 +121,26 @@ Available models:
 - `llama3-8b`: LLAMA3 8B model
 - `llama3.1-8b`: LLAMA3.1 8B model
 
-### 4. Curate Training Data
+### 4. Verify Model Download
+
+After downloading, verify that the model files are present and correctly structured:
+
+```bash
+# Check the model directory structure
+ls -la models/base/llama3-8b/llama-3_1-8b-nemo_v1.0
+
+# Expected output should show:
+# - llama3_1_8b.nemo (main model file, ~16GB)
+# - Other configuration files
+```
+
+### 5. Curate Training Data
 
 ```bash
 python scripts/curate_data.py --input_dir data/raw --output_dir data/processed
 ```
 
-### 5. Fine-tune with LoRA
+### 6. Fine-tune with LoRA
 
 ```bash
 python scripts/train.py \
@@ -137,7 +150,7 @@ python scripts/train.py \
   --output_dir models/finetuned
 ```
 
-### 6. Evaluate the Model
+### 7. Evaluate the Model
 
 ```bash
 python scripts/evaluate.py \
@@ -146,14 +159,14 @@ python scripts/evaluate.py \
   --output_path evaluation_results.json
 ```
 
-### 7. Deploy Chatbot
+### 8. Deploy Chatbot
 
 ```bash
 python scripts/deploy.py \
   --model_path models/finetuned/final_model
 ```
 
-### 8. Export as NIM (Optional)
+### 9. Export as NIM (Optional)
 
 ```bash
 python scripts/export_nim.py \
@@ -161,7 +174,7 @@ python scripts/export_nim.py \
   --output_dir nim/export
 ```
 
-### 9. Build and Run NIM Container (Optional)
+### 10. Build and Run NIM Container (Optional)
 
 ```bash
 cd nim/export
