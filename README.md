@@ -66,13 +66,26 @@ make shell
 ```
 
 The Makefile handles:
-- Pulling the NVIDIA NeMo container (nvcr.io/nvidia/nemo:24.09)
+- Pulling the NVIDIA NeMo container (nvcr.io/nvidia/nemo:25.02)
 - Setting up the development environment
 - Installing system dependencies
 - Installing Poetry for dependency management
 - Installing PyTorch with CUDA 12.8 support
 - Installing project dependencies
 - Installing mamba-ssm for efficient training
+
+Note: If you encounter issues with `mamba-ssm` installation, it may be due to PyTorch not being properly installed first. In this case, you can try installing it manually inside the container:
+
+```bash
+# Access the container shell
+make shell
+
+# Install PyTorch first
+pip install torch==2.7.0+cu128 torchaudio==2.7.0+cu128 --index-url https://download.pytorch.org/whl/cu128
+
+# Then install mamba-ssm
+pip install mamba-ssm==2.2.2
+```
 
 ### Manual Setup (Alternative)
 
