@@ -101,10 +101,10 @@ poetry run pip install mamba-ssm==2.2.2
 ### Prerequisites
 
 Before starting, ensure you have:
-1. NVIDIA GPU with CUDA 12.1 support
-2. Sufficient disk space (at least 20GB)
-3. NGC account and API token
-4. NGC CLI installed (if not, follow the installation steps below)
+1. NVIDIA GPU with CUDA 12.8 support
+2. Docker and NVIDIA Container Toolkit installed
+3. Sufficient disk space (at least 20GB)
+4. NGC account and API token
 
 ### 1. Install NGC CLI (if not already installed)
 
