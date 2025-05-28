@@ -2,8 +2,8 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![NVIDIA NeMo](https://img.shields.io/badge/NVIDIA-NeMo%202.0-green.svg)](https://github.com/NVIDIA/NeMo)
-[![PyTorch](https://img.shields.io/badge/PyTorch-2.1.0-red.svg)](https://pytorch.org/)
-[![CUDA](https://img.shields.io/badge/CUDA-12.1-blue.svg)](https://developer.nvidia.com/cuda-12-1-0-download-archive)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.7.0-red.svg)](https://pytorch.org/)
+[![CUDA](https://img.shields.io/badge/CUDA-12.8-blue.svg)](https://developer.nvidia.com/cuda-12-8-0-download-archive)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
@@ -38,27 +38,62 @@ The project follows a modular design with clear separation of concerns:
 
 ## Installation
 
+### Prerequisites
+
+Before starting, ensure you have:
+1. NVIDIA GPU with CUDA 12.8 support
+2. Docker and NVIDIA Container Toolkit installed
+3. Sufficient disk space (at least 20GB)
+4. NGC account and API token
+
+### Container-based Setup
+
+The project uses NVIDIA's NeMo container for a consistent development environment. The setup is managed through a Makefile for simplicity.
+
+1. **Clone the repository**:
 ```bash
-# Clone the repository
 git clone https://github.com/T-DevH/nemo-qa-chatbot.git
 cd nemo-qa-chatbot
+```
 
+2. **Build and Run the Container**:
+```bash
+# Build and start the container
+make run
+
+# To access the container shell later
+make shell
+```
+
+The Makefile handles:
+- Pulling the NVIDIA NeMo container (nvcr.io/nvidia/nemo:24.09)
+- Setting up the development environment
+- Installing system dependencies
+- Installing Poetry for dependency management
+- Installing PyTorch with CUDA 12.8 support
+- Installing project dependencies
+- Installing mamba-ssm for efficient training
+
+### Manual Setup (Alternative)
+
+If you prefer to set up without containers:
+
+```bash
 # Create virtual environment
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-## Install NVIDIA Apex separately
-```bash
-git clone https://github.com/NVIDIA/apex
-cd apex
-pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation --global-option="--cpp_ext" --global-option="--cuda_ext" ./
-cd ..
-
-# Remove Apex source directory (recommended)
-rm -rf apex
+# Install Poetry
+pip install poetry
 
 # Install dependencies
-pip install -e . --extra-index-url https://pypi.nvidia.com
+poetry install
+
+# Install PyTorch with CUDA support
+poetry run pip install torch==2.7.0+cu128 torchaudio==2.7.0+cu128 --index-url https://download.pytorch.org/whl/cu128
+
+# Install mamba-ssm
+poetry run pip install mamba-ssm==2.2.2
 ```
 
 ## Usage
