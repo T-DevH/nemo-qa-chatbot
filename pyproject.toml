@@ -1,9 +1,9 @@
 [build-system]
 requires = [
- "setuptools>=42",
- "wheel",
- "numpy==1.23.5",
- "Cython>=0.29.0"
+  "setuptools>=42",
+  "wheel",
+  "numpy==1.23.5",
+  "Cython>=0.29.0"
 ]
 build-backend = "setuptools.build_meta"
 
@@ -15,59 +15,52 @@ readme = "README.md"
 authors = [{name = "T-DevH", email = "thammadou@gmail.com"}]
 license = "Apache-2.0"
 classifiers = [
- "Programming Language :: Python :: 3.10",
- "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3.10",
+  "Operating System :: OS Independent"
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.10,<3.11"
 dependencies = [
- # Core dependencies with strict versions for NeMo 2.0
- "numpy==1.23.5",
- "torch==2.1.0+cu121", # Updated to match CUDA 12.1
- "torchvision==0.16.0+cu121", # Added to ensure compatibility with PyTorch 2.1.0
- "torchaudio==2.1.0+cu121", # Added to ensure compatibility with PyTorch 2.1.0
- "pytorch-lightning>=2.2.1,<3.0.0", # Loosened to be compatible with NeMo
- "transformers>=4.44.0,<5.0.0", # Updated to match NeMo requirements
- 
- # NeMo and its core dependencies
- "nemo-toolkit[nlp]==2.0.0",
- "nemo-run>=0.2.0", # Added for NeMo 2.0 experiments
- "hydra-core==1.3.2",
- "omegaconf==2.3.0",
- "megatron-core==0.4.0", # Updated to a more recent version
- # Note: NVIDIA's Apex should be installed separately using:
- # git clone https://github.com/NVIDIA/apex
- # cd apex
- # pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation --global-option="--cpp_ext" --global-option="--cuda_ext" ./
- 
- # Fixed transformer-engine with specific version
- "transformer-engine==1.11.0", # Using an available version
- 
- # LLAMA3 specific dependencies
- "sentencepiece>=0.1.99", # Required for LLAMA3 tokenization
- "einops>=0.6.1", # Useful for tensor manipulations with LLAMA3
- 
- # API dependencies
- "fastapi>=0.95.0,<0.100.0", # Updated to allow compatible versions
- "pydantic>=1.10.0,<2.0.0", # Downgraded to be compatible with FastAPI 0.95.0
- "uvicorn==0.22.0",
- "gradio==3.32.0",
- 
- # Additional required dependencies
- "pandas==2.0.0",
- "scikit-learn==1.2.0",
- "matplotlib==3.7.0",
- "tensorboard==2.11.0",
- "wget==3.2",
- "tqdm==4.65.0", # Updated to newer version
- "huggingface_hub>=0.16.0" # Added for model and tokenizer downloads
+  # Core ML dependencies (must be first)
+  "torch>=2.7.0",
+  "torchaudio>=2.7.0",
+  "nemo-toolkit[all]>=2.0.0",
+  
+  # App-specific LLM dependencies
+  "transformers>=4.44.0,<5.0.0",
+  "sentencepiece>=0.1.99",
+  "einops>=0.6.1",
+
+  # Web and API
+  "fastapi>=0.95.0,<0.100.0",
+  "pydantic>=1.10.0,<2.0.0",
+  "uvicorn==0.22.0",
+  "gradio==3.32.0",
+
+  # Data & Visualization
+  "pandas==2.0.0",
+  "scikit-learn==1.2.0",
+  "matplotlib==3.7.0",
+  "tensorboard==2.11.0",
+  "wget==3.2",
+  "tqdm==4.65.0",
+
+  # Model I/O and Hub
+  "huggingface_hub>=0.16.0",
+
+  # Optional NeMo components (safe)
+  "hydra-core==1.3.2",
+  "omegaconf==2.3.0"
 ]
 
 [project.optional-dependencies]
 dev = [
- "black>=22.3.0",
- "isort>=5.10.1",
- "flake8>=4.0.1",
- "pytest>=7.1.1"
+  "black>=22.3.0",
+  "isort>=5.10.1",
+  "flake8>=4.0.1",
+  "pytest>=7.1.1"
+]
+mamba = [
+  "mamba-ssm>=2.2.2"
 ]
 
 [project.urls]
@@ -82,7 +75,6 @@ nemo-qa-evaluate = "nemo_qa.scripts.evaluate:main"
 nemo-qa-export-nim = "nemo_qa.scripts.export_nim:main"
 nemo-qa-deploy = "nemo_qa.scripts.deploy:main"
 
-# Specify exactly which packages to include
 [tool.setuptools.packages.find]
 include = ["nemo_qa*", "nim*"]
 exclude = ["data*", "notebooks*", "tests*"]
@@ -92,7 +84,7 @@ line-length = 88
 include = '\.pyi?$'
 exclude = '''
 /(
- \.git
+  \.git
  | \.hg
  | \.mypy_cache
  | \.tox

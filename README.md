@@ -243,3 +243,79 @@ if you use this project in your reaserch or work, please consider citing:
 - NVIDIA NeMo team for the amazing framework
 - LLAMA3 for the base model
 - All contributors who have helped shape this project 
+
+## Development Setup with Docker
+
+We use Docker for development to ensure a consistent environment across all developers and to leverage NVIDIA's pre-built NeMo container. This approach has several advantages:
+
+1. **Pre-built Dependencies**: The NVIDIA NeMo container (`nvcr.io/nvidia/nemo:25.02`) comes with:
+   - CUDA and cuDNN pre-installed and configured
+   - PyTorch with CUDA support
+   - Pre-built `transformer-engine` optimized for the container's environment
+   - Other NVIDIA-specific optimizations
+
+2. **Isolated Environment**: Docker provides an isolated environment that:
+   - Prevents conflicts with system-level dependencies
+   - Ensures consistent behavior across different machines
+   - Makes it easy to switch between different versions of dependencies
+
+3. **Simplified Setup**: New developers can start working with just:
+   ```bash
+   make run
+   ```
+
+### What Happens When You Run `make run`
+
+The `make run` command orchestrates the following process:
+
+1. **Container Pull**: Downloads the NVIDIA NeMo base image (`nvcr.io/nvidia/nemo:25.02`)
+
+2. **Volume Mounting**: 
+   - Your local project directory is mounted at `/workspace/nemo_qa_chatbot`
+   - Changes made locally are immediately reflected in the container
+   - Your code runs in the container but is edited on your host machine
+
+3. **Dependency Installation**:
+   - Installs Poetry inside the container
+   - Runs `poetry install --without transformer-engine`
+   - This installs all dependencies from `pyproject.toml` except `transformer-engine`
+   - The pre-built `transformer-engine` from the container is used instead
+
+### Key Files and Their Roles
+
+| File                 | Used? | Role                                      |
+|----------------------|-------|-------------------------------------------|
+| `pyproject.toml`     | ✅    | Defines all your app's dependencies       |
+| `Makefile`          | ✅    | Orchestrates container setup and launch   |
+| `nemo-toolkit`      | ✅    | Installed from TOML via Poetry            |
+| `transformer-engine` | ❌    | Pre-built in container (skipped in TOML)  |
+| Your code/scripts    | ✅    | Mounted live from your host machine       |
+
+### Why We Skip `transformer-engine` in Poetry
+
+We intentionally skip installing `transformer-engine` via Poetry because:
+1. The NVIDIA container already includes a pre-built, optimized version
+2. Building from source can be complex and error-prone
+3. The pre-built version is guaranteed to work with the container's CUDA setup
+
+### Development Workflow
+
+1. Start the container:
+   ```bash
+   make run
+   ```
+
+2. Access the container shell (in a new terminal):
+   ```bash
+   make shell
+   ```
+
+3. Your code is mounted at `/workspace/nemo_qa_chatbot`
+   - Edit files on your host machine
+   - Run code inside the container
+   - Changes are immediately reflected
+
+4. When done, simply exit the container:
+   ```bash
+   exit
+   ``` 
